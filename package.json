@@ -21,6 +21,7 @@
     "winston": "^2.1.1"
   },
   "scripts": {
+    "now-start": "node telegram_bot.js",
     "pretest": "jscs ./lib/",
     "test": "mocha tests/*.js"
   },
