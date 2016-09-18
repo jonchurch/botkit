@@ -1,6 +1,6 @@
 
-if (!process.env.access_token) {
-    console.log('Error: Specify access_token in environment');
+if (!process.env.telegram_token) {
+    console.log('Error: Specify telegram_token in environment');
     process.exit(1);
 }
 
@@ -9,7 +9,7 @@ var Botkit = require('./lib/Botkit.js');
 var os = require('os');
 
 var controller = Botkit.telegrambot({
-    debug: true,
+    debug: false,
     access_token: process.env.telegram_token,
     webhook_url: process.env.webhook_url
 });
@@ -24,6 +24,7 @@ controller.setupWebserver(process.env.port || 8443, function(err, webserver) {
 
 
 controller.hears(['hello', 'hi'], 'message_received', function(bot, message) {
+  console.log('========MESSAGE:\n', message);
 
 
     controller.storage.users.get(message.user, function(err, user) {
