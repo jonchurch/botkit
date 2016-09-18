@@ -1,4 +1,3 @@
-
 if (!process.env.telegram_token) {
     console.log('Error: Specify telegram_token in environment');
     process.exit(1);
@@ -24,7 +23,7 @@ controller.setupWebserver(process.env.port || 8443, function(err, webserver) {
 
 
 controller.hears(['hello', 'hi'], 'message_received', function(bot, message) {
-  console.log('========MESSAGE:\n', message);
+    // console.log('========MESSAGE:\n', message);
 
 
     controller.storage.users.get(message.user, function(err, user) {
@@ -36,6 +35,53 @@ controller.hears(['hello', 'hi'], 'message_received', function(bot, message) {
     });
 });
 
+
+controller.hears(['🏀', '🍕'], 'message_received', function(bot, message) {
+console.log('PIZZA MESSAGE\n',message);
+    var message = {
+        channel: message.channel,
+        text: 'Pizza!🍕',
+    }
+    bot.send(message, function(err) {
+      if (err) {
+        console.log('ERROR',err);
+      }
+    });
+
+});
+
+controller.hears(['structured', 'inline', '🐛'], 'message_received', function(bot, message) {
+    console.log('HEARD STRUCTURED');
+    bot.startConversation(message, function(err, convo) {
+        // console.log('CONVO STARTED======\n', convo);
+        console.log('MESSAGE IN CONVO FUNCTION\n', message);
+        bot.send({
+            channel: message.channel,
+            text: '✨🎉🍻🎉🍻🎉🍻🎉🍻✨',
+            reply_markup: {
+                inline_keyboard: [
+                    [{
+                        text: '🔍Inspect',
+                        callback_data: 'LOOK'
+                    }],
+                    [{
+                        text: '✨🔮✨',
+                        callback_data: 'EXIT/EXPAND'
+                    }]
+                ]
+            }
+        }, function(response, convo) {
+            //should recieve postback payload
+            // convo.next();
+        });
+    });
+});
+
+controller.on('telegram_postback', function(bot, message) {
+    console.log('HEARD POSTBACK');
+    bot.reply('Great Choice!!!' + message.payload);
+
+});
 
 controller.hears(['call me (.*)', 'my name is (.*)'], 'message_received', function(bot, message) {
     var name = message.match[1];
