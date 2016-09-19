@@ -54,8 +54,8 @@ controller.hears(['structured', 'inline', '🐛'], 'message_received', function(
     console.log('HEARD STRUCTURED');
     bot.startConversation(message, function(err, convo) {
         // console.log('CONVO STARTED======\n', convo);
-        console.log('MESSAGE IN CONVO FUNCTION\n', message);
-        bot.send({
+        // console.log('MESSAGE IN CONVO FUNCTION\n', messag);
+        convo.ask({
             channel: message.channel,
             text: '✨🎉🍻🎉🍻🎉🍻🎉🍻✨',
             reply_markup: {
@@ -72,14 +72,16 @@ controller.hears(['structured', 'inline', '🐛'], 'message_received', function(
             }
         }, function(response, convo) {
             //should recieve postback payload
-            // convo.next();
+            console.log('HEARD IT I HEARD THAT POSTBACK BOYEEE');
+            convo.next();
         });
     });
 });
 
 controller.on('telegram_postback', function(bot, message) {
-    console.log('HEARD POSTBACK');
-    bot.reply('Great Choice!!!' + message.payload);
+  console.log('==============HEARD POSTBACK!!!\n');
+  console.log('MESSAGE=========\n', message);
+    bot.reply(message, 'Great Choice!!!');
 
 });
 
@@ -93,6 +95,7 @@ controller.hears(['call me (.*)', 'my name is (.*)'], 'message_received', functi
         }
         user.name = name;
         controller.storage.users.save(user, function(err, id) {
+          console.log('==========NAME MESSAGE\n', message);
             bot.reply(message, 'Got it. I will call you ' + user.name + ' from now on.');
         });
     });
