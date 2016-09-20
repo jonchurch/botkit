@@ -8,7 +8,7 @@ var Botkit = require('./lib/Botkit.js');
 var os = require('os');
 
 var controller = Botkit.telegrambot({
-    debug: false,
+    debug: true,
     access_token: process.env.telegram_token,
     webhook_url: process.env.webhook_url
 });
@@ -72,6 +72,7 @@ controller.hears(['structured', 'inline', '🐛'], 'message_received', function(
             }
         }, function(response, convo) {
             //should recieve postback payload
+            convo.say('You said ' + response.text)
             console.log('HEARD IT I HEARD THAT POSTBACK BOYEEE');
             convo.next();
         });
