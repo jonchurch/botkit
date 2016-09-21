@@ -44,7 +44,7 @@ controller.setupWebserver(process.env.port || 8443, function(err, webserver) {
                     console.log(err);
                     process.exit();
                 }
-                console.log("Your bot is available on the web at the following URL: " + tunnel.url + '/facebook/receive');
+                console.log("Your bot is available on the web at the following URL: " + tunnel.url + '/telegram/receive');
             });
 
             tunnel.on('close', function() {
