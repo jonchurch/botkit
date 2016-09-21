@@ -32,7 +32,7 @@ Table of Contents
 > Note that Telegram webhooks only supports ports 443, 80, 88, 8443 at this time.
 
 ```
-telegram_token=<MY BOT TOKEN> webhook_url=<https://EXAMPLE.localtunnel.me/> node telegram_bot.js [--lt [--ltsubdomain EXAMPLE] [--port 8443]]
+telegram_token=<MY BOT TOKEN> webhook_url=<https://EXAMPLE.localtunnel.me/> node telegram_bot.js [--lt [--ltsubdomain EXAMPLE]]
 ```
 
 6) Your bot should be online! Within Telegram, search for your bot and start a conversation.
