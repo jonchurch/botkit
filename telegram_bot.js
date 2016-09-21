@@ -37,15 +37,15 @@ controller.hears(['hello', 'hi'], 'message_received', function(bot, message) {
 
 
 controller.hears(['🏀', '🍕'], 'message_received', function(bot, message) {
-console.log('PIZZA MESSAGE\n',message);
+    console.log('PIZZA MESSAGE\n', message);
     var message = {
         channel: message.channel,
         text: 'Pizza!🍕',
     }
     bot.send(message, function(err) {
-      if (err) {
-        console.log('ERROR',err);
-      }
+        if (err) {
+            console.log('ERROR', err);
+        }
     });
 
 });
@@ -62,29 +62,53 @@ controller.hears(['structured', 'inline', '🐛'], 'message_received', function(
                 inline_keyboard: [
                     [{
                         text: '🔍Inspect',
-                        callback_data: 'LOOK'
+                        callback_data: 'CALLBACK_QUERY/LOOK'
                     }],
                     [{
                         text: '✨🔮✨',
-                        callback_data: 'EXIT/EXPAND'
+                        callback_data: 'CALLBACK_QUERY/EXIT/EXPAND'
                     }]
                 ]
             }
         }, function(response, convo) {
+          console.log('Response from PostBack============\n', response);
             //should recieve postback payload
-            convo.say('You said ' + response.text)
-            console.log('HEARD IT I HEARD THAT POSTBACK BOYEEE');
-            convo.next();
+            if (response.callback_id) {
+                var msg = {
+                    chat_id: response.user,
+                    message_id: response.parent_message.message_id,
+                    text: '🔮🔮🔮🔮🔮🔮🔮🔮',
+                    reply_markup: {
+                        inline_keyboard: [
+                            [{
+                                text: '🍻🍻🍻🍻🍻🍻',
+                                callback_data: 'CALLBACK_QUERY/LOOK'
+                            }],
+                            [{
+                                text: '🎉🎉🎉🎉🎉🎉',
+                                callback_data: 'CALLBACK_QUERY/EXIT/EXPAND'
+                            }]
+                        ]
+                    }
+                };
+                bot.editMessageText(msg);
+                convo.next();
+            } else {
+              convo.silentRepeat()
+            }
+
+
+
         });
     });
 });
 
-controller.on('telegram_postback', function(bot, message) {
-  console.log('==============HEARD POSTBACK!!!\n');
-  console.log('MESSAGE=========\n', message);
-    bot.reply(message, 'Great Choice!!!');
-
-});
+// controller.on('telegram_postback', function(bot, message) {
+//     console.log('==============HEARD POSTBACK!!!\n');
+//     console.log('MESSAGE=========\n', message);
+//     bot.reply(message, 'Great Choice!!!');
+//
+// });
 
 controller.hears(['call me (.*)', 'my name is (.*)'], 'message_received', function(bot, message) {
     var name = message.match[1];
@@ -96,7 +120,7 @@ controller.hears(['call me (.*)', 'my name is (.*)'], 'message_received', functi
         }
         user.name = name;
         controller.storage.users.save(user, function(err, id) {
-          console.log('==========NAME MESSAGE\n', message);
+            console.log('==========NAME MESSAGE\n', message);
             bot.reply(message, 'Got it. I will call you ' + user.name + ' from now on.');
         });
     });
@@ -199,11 +223,14 @@ controller.hears(['uptime', 'identify yourself', 'who are you', 'what is your na
         var uptime = formatUptime(process.uptime());
 
         bot.reply(message,
-            ':robot_face: I am a bot named <@' + bot.identity.name +
-            '>. I have been running for ' + uptime + ' on ' + hostname + '.');
+            ':robot_face: I am a bot. I have been running for ' + uptime + ' on ' + hostname + '.');
     });
 
 
+controller.hears(['^CALLBACK_QUERY'], 'message_received', function(bot, message){
+  //suppress callbacks
+  console.log('Heard that callback and its all that!🎉');
+});
 
 controller.on('message_received', function(bot, message) {
     bot.reply(message, 'Try: `what is my name` or `structured` or `call me captain`');
