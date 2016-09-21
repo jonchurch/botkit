@@ -73,6 +73,7 @@ More information about the data found in these fields can be found [here](https:
 Botkit receives messages from Telegram using webhooks, and sends messages using Telegram's APIs. This means that your bot application must present a web server that is publicly addressable. Everything you need to get started is already included in Botkit.
 
 To connect your bot to Telegram, you need to register the webhook you will be receiving messages at with Telegram. Learn more about setting webhooks with Telegram [here](https://core.telegram.org/bots/api#setwebhook). Botkit will do this automatically when you supply the webhook_url in the environment. To learn more about setting up a public webhook for Telegram check [here](https://core.telegram.org/bots/webhooks)
+
 _*Note:* You cannot use longpolling updates for Telegram while a webhook is registered_
 
 Here is the complete code for a basic Facebook bot:
