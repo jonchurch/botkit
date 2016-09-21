@@ -3,6 +3,11 @@ if (!process.env.telegram_token) {
     process.exit(1);
 }
 
+if (!process.env.webhook_url) {
+    console.log('Error: Specify webhook_url in environment');
+    process.exit(1);
+}
+
 
 var Botkit = require('./lib/Botkit.js');
 var os = require('os');
@@ -23,8 +28,6 @@ controller.setupWebserver(process.env.port || 8443, function(err, webserver) {
 
 
 controller.hears(['hello', 'hi'], 'message_received', function(bot, message) {
-    // console.log('========MESSAGE:\n', message);
-
 
     controller.storage.users.get(message.user, function(err, user) {
         if (user && user.name) {
@@ -36,25 +39,20 @@ controller.hears(['hello', 'hi'], 'message_received', function(bot, message) {
 });
 
 
-controller.hears(['🏀', '🍕'], 'message_received', function(bot, message) {
-    console.log('PIZZA MESSAGE\n', message);
-    var message = {
-        channel: message.channel,
-        text: 'Pizza!🍕',
-    }
-    bot.send(message, function(err) {
-        if (err) {
-            console.log('ERROR', err);
-        }
-    });
-
-});
+// controller.hears(['🏀', '🍕'], 'message_received', function(bot, message) {
+//     var message = {
+//         channel: message.channel,
+//         text: 'Pizza!🍕',
+//     }
+//     bot.send(message, function(err) {
+//         if (err) {
+//             console.log('ERROR', err);
+//         }
+//     });
+// });
 
 controller.hears(['structured', 'inline', '🐛'], 'message_received', function(bot, message) {
-    console.log('HEARD STRUCTURED');
     bot.startConversation(message, function(err, convo) {
-        // console.log('CONVO STARTED======\n', convo);
-        // console.log('MESSAGE IN CONVO FUNCTION\n', messag);
         convo.ask({
             channel: message.channel,
             text: '✨🎉🍻🎉🍻🎉🍻🎉🍻✨',
@@ -71,7 +69,6 @@ controller.hears(['structured', 'inline', '🐛'], 'message_received', function(
                 ]
             }
         }, function(response, convo) {
-          console.log('Response from PostBack============\n', response);
             //should recieve postback payload
             if (response.callback_id) {
                 var msg = {
@@ -94,21 +91,18 @@ controller.hears(['structured', 'inline', '🐛'], 'message_received', function(
                 bot.editMessageText(msg);
                 convo.next();
             } else {
-              convo.silentRepeat()
+                convo.silentRepeat()
             }
-
-
 
         });
     });
 });
 
-// controller.on('telegram_postback', function(bot, message) {
-//     console.log('==============HEARD POSTBACK!!!\n');
-//     console.log('MESSAGE=========\n', message);
-//     bot.reply(message, 'Great Choice!!!');
-//
-// });
+controller.on('telegram_postback', function(bot, message) {
+    // bot.reply(message, 'Great Choice!!!');
+    bot.reply(message, 'You said ' + message.payload);
+
+});
 
 controller.hears(['call me (.*)', 'my name is (.*)'], 'message_received', function(bot, message) {
     var name = message.match[1];
@@ -120,7 +114,6 @@ controller.hears(['call me (.*)', 'my name is (.*)'], 'message_received', functi
         }
         user.name = name;
         controller.storage.users.save(user, function(err, id) {
-            console.log('==========NAME MESSAGE\n', message);
             bot.reply(message, 'Got it. I will call you ' + user.name + ' from now on.');
         });
     });
@@ -227,9 +220,9 @@ controller.hears(['uptime', 'identify yourself', 'who are you', 'what is your na
     });
 
 
-controller.hears(['^CALLBACK_QUERY'], 'message_received', function(bot, message){
-  //suppress callbacks
-  console.log('Heard that callback and its all that!🎉');
+controller.hears(['^CALLBACK_QUERY'], 'message_received', function(bot, message) {
+    //suppress callbacks
+    return false
 });
 
 controller.on('message_received', function(bot, message) {
