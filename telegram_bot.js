@@ -31,25 +31,13 @@ controller.hears(['hello', 'hi'], 'message_received', function(bot, message) {
 
     controller.storage.users.get(message.user, function(err, user) {
         if (user && user.name) {
-            bot.reply(message, 'Hello ' + user.name + '!!');
+          bot.reply(message, 'Hello ' + user.name + '!')
+
         } else {
             bot.reply(message, 'Hello.');
         }
     });
 });
-
-
-// controller.hears(['🏀', '🍕'], 'message_received', function(bot, message) {
-//     var message = {
-//         channel: message.channel,
-//         text: 'Pizza!🍕',
-//     }
-//     bot.send(message, function(err) {
-//         if (err) {
-//             console.log('ERROR', err);
-//         }
-//     });
-// });
 
 controller.hears(['structured', 'inline', '🐛'], 'message_received', function(bot, message) {
     bot.startConversation(message, function(err, convo) {

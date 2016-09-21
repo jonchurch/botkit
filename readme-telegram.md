@@ -58,31 +58,30 @@ Normal messages will be sent to your bot using the `message_received` event.  In
 | Event | Description
 |--- |---
 | message_received | a message was received by the bot
-| facebook_postback | user clicked a button in an attachment and triggered a webhook postback
-| message_delivered | a confirmation from Facebook that a message has been received
-| facebook_optin | a user has clicked the [Send-to-Messenger plugin](https://developers.facebook.com/docs/messenger-platform/implementation#send_to_messenger_plugin)
+| telegram_postback | user clicked a button in an inline keyboard and triggered a webhook postback
 
-All incoming events will contain the fields `user` and `channel`, both of which represent the Facebook user's ID, and a `timestamp` field.
+All incoming events will contain the fields `user` and `channel`, both of which represent the Telegram user's ID, and a `timestamp` field.
 
-`message_received` events will also contain either a `text` field or an `attachment` field.
+`message_received` events will also contain either a `text` field or one of telegram's many [message types](https://core.telegram.org/bots/api#available-types)
 
-`facebook_postback` events will contain a `payload` field.
+`telegram_postback` events will contain a `payload` field with the callback data from the inline keyboard button pressed by user.
 
-More information about the data found in these fields can be found [here](https://developers.facebook.com/docs/messenger-platform/webhook-reference).
+More information about the data found in these fields can be found [here](https://core.telegram.org/bots/api#available-types).
 
-## Working with Facebook Messenger
+## Working with Telegram
 
-Botkit receives messages from Facebook using webhooks, and sends messages using Facebook's APIs. This means that your bot application must present a web server that is publicly addressable. Everything you need to get started is already included in Botkit.
+Botkit receives messages from Telegram using webhooks, and sends messages using Telegram's APIs. This means that your bot application must present a web server that is publicly addressable. Everything you need to get started is already included in Botkit.
 
-To connect your bot to Facebook, [follow the instructions here](https://developers.facebook.com/docs/messenger-platform/implementation). You will need to collect your `page token` as well as a `verify token` that you define yourself and configure inside Facebook's app settings. A step by step guide [can be found here](#getting-started). Since you must *already be running* your Botkit app to configure your Facebook app, there is a bit of back-and-forth. It's ok! You can do it.
+To connect your bot to Telegram, you need to register the webhook you will be receiving messages at with Telegram. Learn more about setting webhooks with Telegram [here](https://core.telegram.org/bots/api#setwebhook). Botkit will do this automatically when you supply the webhook_url in the environment. To learn more about setting up a public webhook for Telegram check [here](https://core.telegram.org/bots/webhooks)
+_*Note:* You cannot use longpolling updates for Telegram while a webhook is registered_
 
 Here is the complete code for a basic Facebook bot:
 
 ```javascript
 var Botkit = require('botkit');
-var controller = Botkit.facebookbot({
-        access_token: process.env.access_token,
-        verify_token: process.env.verify_token,
+var controller = Botkit.telegrambot({
+        telegram_token: process.env.access_token,
+        webhook_url: process.env.webhook_url,
 })
 
 var bot = controller.spawn({
@@ -90,17 +89,10 @@ var bot = controller.spawn({
 
 // if you are already using Express, you can use your own server instance...
 // see "Use BotKit with an Express web server"
-controller.setupWebserver(process.env.port,function(err,webserver) {
+controller.setupWebserver(process.env.port || 8443,function(err,webserver) {
   controller.createWebhookEndpoints(controller.webserver, bot, function() {
       console.log('This bot is online!!!');
   });
-});
-
-// this is triggered when a user clicks the send-to-messenger plugin
-controller.on('facebook_optin', function(bot, message) {
-
-    bot.reply(message, 'Welcome to my app!');
-
 });
 
 // user said hello
@@ -127,7 +119,7 @@ controller.hears(['cookies'], 'message_received', function(bot, message) {
 #### controller.setupWebserver()
 | Argument | Description
 |---  |---
-| port | port for webserver
+| port | port for webserver, use one of 443, 80, 88, 8443
 | callback | callback function
 
 Setup an [Express webserver](http://expressjs.com/en/index.html) for
@@ -141,14 +133,14 @@ which may be used to add further web server routes.
 
 #### controller.createWebhookEndpoints()
 
-This function configures the route `https://_your_server_/facebook/receive`
+This function configures the route `https://_your_server_/telegram/receive`
 to receive webhooks from Facebook.
 
-This url should be used when configuring Facebook.
+This url should be used when configuring Telegram.
 
-## Using Structured Messages and Postbacks
+## Using Inline Keyboards, Custom Keyboards, and Postbacks
 
-You can attach little bubbles
+You can attach little bubbles, called an inline keyboard
 
 And in those bubbles can be buttons
 and when a user clicks the button, it sends a postback with the value.
