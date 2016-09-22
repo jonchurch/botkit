@@ -72,22 +72,24 @@ controller.hears(['structured', 'inline', '🐛'], 'message_received', function(
     bot.startConversation(message, function(err, convo) {
         convo.ask({
             channel: message.channel,
-            text: '✨🎉🍻🎉🍻🎉🍻🎉🍻✨',
+            text: 'Want to see a magic trick? ',
             reply_markup: {
                 inline_keyboard: [
                     [{
-                        text: '🔍Inspect',
-                        callback_data: 'CALLBACK_QUERY/LOOK'
+                        text: 'Yes',
+                        callback_data: 'yes'
                     }],
                     [{
-                        text: '✨🔮✨',
-                        callback_data: 'CALLBACK_QUERY/EXIT/EXPAND'
+                        text: 'No',
+                        callback_data: 'No'
                     }]
                 ]
             }
-        }, function(response, convo) {
-            //should recieve postback payload
-            if (response.callback_id) {
+        }, [{
+            pattern: 'yes',
+            callback: function(response, convo) {
+                // since no further messages are queued after this,
+                // the conversation will end naturally with status == 'completed'
                 var msg = {
                     chat_id: response.user,
                     message_id: response.parent_message.message_id,
@@ -107,11 +109,34 @@ controller.hears(['structured', 'inline', '🐛'], 'message_received', function(
                 };
                 bot.editMessageText(msg);
                 convo.next();
-            } else {
-                convo.silentRepeat()
             }
+        },
+        {
+            pattern: 'no',
+            callback: function(response, convo) {
+                // stop the conversation. this will cause it to end with status == 'stopped'
+                var msg = {
+                    chat_id: response.user,
+                    message_id: response.parent_message.message_id,
+                    text: 'Okay fine, nevermind then...',
+                    reply_markup: {
 
-        });
+                    }
+                };
+                bot.editMessageText(msg);
+                convo.stop();
+            }
+        },
+        {
+            default: true,
+            callback: function(response, convo) {
+                convo.repeat();
+                convo.next();
+            }
+        }
+    ]
+
+        );
     });
 });
 
