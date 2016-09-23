@@ -184,3 +184,5 @@ controller.on('facebook_postback', function(bot, message) {
 
 });
 ```
+### bot.editMessageText()
+Telegram allows you to edit messages sent by your bot. Pass in a message object which contains the `chat_id`, `message_id`, updated `text`, and optional `reply_markup` for the specific message you would like to edit.
