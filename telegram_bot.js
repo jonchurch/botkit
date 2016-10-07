@@ -55,84 +55,84 @@ controller.setupWebserver(process.env.port || 8443, function(err, webserver) {
     });
 });
 
-bot.startConversation({
-  user: 145647720,
-  channel: 145647720,
-  text: 'dummy'
-}, function(err, convo) {
-  if (err) {
-    console.log('ERROR IN CONVO:', err)
-  }
-  convo.say('Hey there Ted!')
-  convo.ask({
-      channel: 145647720,
-      text: 'Want to see a magic trick? ',
-      reply_markup: {
-          inline_keyboard: [
-              [{
-                  text: 'Yes',
-                  callback_data: 'yes'
-              }],
-              [{
-                  text: 'No',
-                  callback_data: 'No'
-              }]
-          ]
-      }
-  }, [{
-      pattern: 'yes',
-      callback: function(response, convo) {
-          // since no further messages are queued after this,
-          // the conversation will end naturally with status == 'completed'
-          var msg = {
-              chat_id: response.user,
-              message_id: response.parent_message.message_id,
-              text: '🔮🔮🔮🔮🔮🔮🔮🔮',
-              reply_markup: {
-                  inline_keyboard: [
-                      [{
-                          text: '🍻🍻🍻🍻🍻🍻',
-                          callback_data: 'CALLBACK_QUERY/LOOK'
-                      }],
-                      [{
-                          text: '🎉🎉🎉🎉🎉🎉',
-                          callback_data: 'CALLBACK_QUERY/EXIT/EXPAND'
-                      }]
-                  ]
-              }
-          };
-          bot.editMessageText(msg);
-          convo.next();
-      }
-  },
-  {
-      pattern: 'no',
-      callback: function(response, convo) {
-          // stop the conversation. this will cause it to end with status == 'stopped'
-          var msg = {
-              chat_id: response.user,
-              message_id: response.parent_message.message_id,
-              text: 'Okay fine, nevermind then...',
-              reply_markup: {
 
-              }
-          };
-          bot.editMessageText(msg);
-          convo.stop();
-      }
-  },
-  {
-      default: true,
-      callback: function(response, convo) {
-          convo.repeat();
-          convo.next();
-      }
-  }
-]
-
-  );
-
-})
+// bot.startConversation({
+//   user: 145647720,
+//   channel: 145647720
+// }, function(err, convo) {
+//   if (err) {
+//     console.log('ERROR IN CONVO:', err)
+//   }
+//   convo.say('Hey there Ted!')
+//   convo.ask({
+//       channel: 145647720,
+//       text: 'Want to see a magic trick? ',
+//       reply_markup: {
+//           inline_keyboard: [
+//               [{
+//                   text: 'Yes',
+//                   callback_data: 'yes'
+//               }],
+//               [{
+//                   text: 'No',
+//                   callback_data: 'No'
+//               }]
+//           ]
+//       }
+//   }, [{
+//       pattern: 'yes',
+//       callback: function(response, convo) {
+//           // since no further messages are queued after this,
+//           // the conversation will end naturally with status == 'completed'
+//           var msg = {
+//               chat_id: response.user,
+//               message_id: response.parent_message.message_id,
+//               text: '🔮🔮🔮🔮🔮🔮🔮🔮',
+//               reply_markup: {
+//                   inline_keyboard: [
+//                       [{
+//                           text: '🍻🍻🍻🍻🍻🍻',
+//                           callback_data: 'CALLBACK_QUERY/LOOK'
+//                       }],
+//                       [{
+//                           text: '🎉🎉🎉🎉🎉🎉',
+//                           callback_data: 'CALLBACK_QUERY/EXIT/EXPAND'
+//                       }]
+//                   ]
+//               }
+//           };
+//           bot.editMessageText(msg);
+//           convo.next();
+//       }
+//   },
+//   {
+//       pattern: 'no',
+//       callback: function(response, convo) {
+//           // stop the conversation. this will cause it to end with status == 'stopped'
+//           var msg = {
+//               chat_id: response.user,
+//               message_id: response.parent_message.message_id,
+//               text: 'Okay fine, nevermind then...',
+//               reply_markup: {
+//
+//               }
+//           };
+//           bot.editMessageText(msg);
+//           convo.stop();
+//       }
+//   },
+//   {
+//       default: true,
+//       callback: function(response, convo) {
+//           convo.repeat();
+//           convo.next();
+//       }
+//   }
+// ]
+//
+//   );
+//
+// })
 controller.hears(['hello', 'hi'], 'message_received', function(bot, message) {
 
     controller.storage.users.get(message.user, function(err, user) {
@@ -355,7 +355,7 @@ controller.hears(['uptime', 'identify yourself', 'who are you', 'what is your na
 
 
 controller.hears(['^CALLBACK_QUERY'], 'message_received', function(bot, message) {
-    //suppress callbacks
+    //catch callbacks
     return false
 });
 
