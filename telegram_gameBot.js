@@ -14,15 +14,23 @@ var os = require('os');
 var commandLineArgs = require('command-line-args');
 var localtunnel = require('localtunnel');
 
-const ops = commandLineArgs([
-      {name: 'lt', alias: 'l', args: 1, description: 'Use localtunnel.me to make your bot available on the web.',
-      type: Boolean, defaultValue: false},
-      {name: 'ltsubdomain', alias: 's', args: 1,
-      description: 'Custom subdomain for the localtunnel.me URL. This option can only be used together with --lt.',
-      type: String, defaultValue: null},
-   ]);
+const ops = commandLineArgs([{
+    name: 'lt',
+    alias: 'l',
+    args: 1,
+    description: 'Use localtunnel.me to make your bot available on the web.',
+    type: Boolean,
+    defaultValue: false
+}, {
+    name: 'ltsubdomain',
+    alias: 's',
+    args: 1,
+    description: 'Custom subdomain for the localtunnel.me URL. This option can only be used together with --lt.',
+    type: String,
+    defaultValue: null
+}, ]);
 
-if(ops.lt === false && ops.ltsubdomain !== null) {
+if (ops.lt === false && ops.ltsubdomain !== null) {
     console.log("error: --ltsubdomain can only be used together with --lt.");
     process.exit();
 }
@@ -38,8 +46,10 @@ var bot = controller.spawn({});
 controller.setupWebserver(process.env.port || 8443, function(err, webserver) {
     controller.createWebhookEndpoints(webserver, bot, function() {
         console.log('ONLINE!');
-        if(ops.lt) {
-            var tunnel = localtunnel(process.env.port || 8443, {subdomain: ops.ltsubdomain}, function(err, tunnel) {
+        if (ops.lt) {
+            var tunnel = localtunnel(process.env.port || 8443, {
+                subdomain: ops.ltsubdomain
+            }, function(err, tunnel) {
                 if (err) {
                     console.log(err);
                     process.exit();
@@ -57,13 +67,41 @@ controller.setupWebserver(process.env.port || 8443, function(err, webserver) {
 
 
 controller.hears(['(.*)'], 'message_received', function(bot, message) {
-  // lookup user info 👍
-  //  controller.storage.users.get(message.user, function(err, user) { })
-  const game = {
-    chat_id: message.user,
-    game_short_name: 'Trumpdunk'
-  }
+    // lookup user info 👍
+    //  controller.storage.users.get(message.user, function(err, user) { })
+    const game = {
+        chat_id: message.user,
+        game_short_name: 'Trumpdunk',
+        // reply_markup: {
+        //     inline_keyboard: [
+        //         [{
+        //             text: "Play Solo",
+        //             url: 'http://jonchurch.github.io/basketball',
+        //             // callback_data: 'Trumpdunk'
+        //             callback_game: ''
+        //         }]
+        //     ]
+        // }
+    }
 
-bot.sendGame(game)
+    bot.sendGame(game)
+
+})
+
+
+controller.on('telegram_postback', function(bot, message) {
+  console.log('=====================Message from callback\n', message);
+
+  if (message.parent_message.game.title === 'Trump Dunk') {
+
+    const msg = {
+      // this is a lil gross, what telegram expects and what I'm passing are different here
+      // Telegram expects callback_query_id and i'm providing it as callback_id to my hears and controller
+      callback_query_id: message.callback_id,
+      url: 'http://jonchurch.github.io/basketball'
+    }
+    bot.answerCallbackQuery(msg)
+
+  }
 
 })
