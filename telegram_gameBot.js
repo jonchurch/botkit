@@ -72,20 +72,8 @@ controller.hears(['(.*)'], 'message_received', function(bot, message) {
     const game = {
         chat_id: message.user,
         game_short_name: 'Trumpdunk',
-        // reply_markup: {
-        //     inline_keyboard: [
-        //         [{
-        //             text: "Play Solo",
-        //             url: 'http://jonchurch.github.io/basketball',
-        //             // callback_data: 'Trumpdunk'
-        //             callback_game: ''
-        //         }]
-        //     ]
-        // }
     }
-
     bot.sendGame(game)
-
 })
 
 
@@ -98,7 +86,7 @@ controller.on('telegram_postback', function(bot, message) {
       // this is a lil gross, what telegram expects and what I'm passing are different here
       // Telegram expects callback_query_id and i'm providing it as callback_id to my hears and controller
       callback_query_id: message.callback_id,
-      url: 'http://jonchurch.github.io/basketball'
+      url: 'http://jonchurch.github.io/basketball/' + '?user=' + message.user + '&chat=' + message.channel + '&message=' + message.parent_message.message_id + '&telegram=true'
     }
     bot.answerCallbackQuery(msg)
 
