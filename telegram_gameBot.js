@@ -86,7 +86,7 @@ controller.on('telegram_postback', function(bot, message) {
       // this is a lil gross, what telegram expects and what I'm passing are different here
       // Telegram expects callback_query_id and i'm providing it as callback_id to my hears and controller
       callback_query_id: message.callback_id,
-      url: 'http://jonchurch.github.io/basketball/' + '?user=' + message.user + '&chat=' + message.channel + '&message=' + message.parent_message.message_id + '&telegram=true'
+      url: 'http://jonchurch.github.io/dump-trump/' + '?user=' + message.user + '&chat=' + message.channel + '&message=' + message.parent_message.message_id + '&telegram=true'
     }
     bot.answerCallbackQuery(msg)
 
