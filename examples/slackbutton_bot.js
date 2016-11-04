@@ -34,6 +34,7 @@ if (!process.env.clientId || !process.env.clientSecret || !process.env.port) {
 
 
 var controller = Botkit.slackbot({
+    debug: true,
   json_file_store: './db_slackbutton_bot/',
 }).configureSlackApp(
   {
@@ -66,6 +67,7 @@ function trackBot(bot) {
 controller.on('create_bot',function(bot,config) {
 
   if (_bots[bot.config.token]) {
+      console.log('==========Should be online')
     // already online! do nothing.
   } else {
     bot.startRTM(function(err) {
@@ -98,6 +100,11 @@ controller.on('rtm_close',function(bot) {
   console.log('** The RTM api just closed');
   // you may want to attempt to re-open
 });
+
+controller.on('file_shared', function(bot, message) {
+    console.log('=========== 👻 BOO!! 👻 FILE SHARED!!')
+    bot.reply(message, 'I believe you have my stapler')
+})
 
 controller.hears('hello','direct_message',function(bot,message) {
   bot.reply(message,'Hello!');
