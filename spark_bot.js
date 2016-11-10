@@ -11,7 +11,14 @@ var controller = Botkit.sparkbot({
     debug: true
 });
 
+var bot = controller.spawn({});
+
 controller.setupWebserver(process.env.port, function(err, webserver) {
-    controller.createWebhookEndpoints(controller.webserver);
+    controller.createWebhookEndpoints(webserver, bot);
 
 });
+
+
+controller.hears(['(.*)'], 'message_received', function(bot, message) {
+    bot.reply(message, '🍕🔷🔮')
+})
