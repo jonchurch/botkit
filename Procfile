@@ -1,1 +1,1 @@
-web: node issue495.js
+web: node facebook_bot.js
