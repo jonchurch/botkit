@@ -65,15 +65,51 @@ var controller = Botkit.consolebot({
 
 var bot = controller.spawn();
 
+var courses = [1, 2, 3, 4];
+
+var asyncFn = function(x) {
+return new Promise(resolve => setTimeout(() => resolve([x, x * 2]), 1000));
+};
+
+controller.hears(['pizza'], 'message_received', function(bot, message) {
+
+    bot.startConversation(message, (err, convo) => {
+            convo.say('Here are the announcements from all your classes.');
+            courses.forEach((tempCourse) => {
+              convo.say('');  // Hack, needed for convo to work
+              asyncFn(tempCourse)
+              .then((returnAttachments) => {
+                    returnAttachments.forEach((a) => {
+                      convo.say(a.toString());
+                   });
+                });
+              });
+      });
+
+
+})
+
 controller.hears(['hello', 'hi'], 'message_received', function(bot, message) {
 
-    controller.storage.users.get(message.user, function(err, user) {
-        if (user && user.name) {
-            bot.reply(message, 'Hello ' + user.name + '!!');
-        } else {
-            bot.reply(message, 'Hello.');
-        }
-    });
+bot.createConversation(message, (err, convo) => {
+
+            convo.addMessage('Here are the announcements from all your classes.');
+
+            var response = Promise.all(courses.map(asyncFn));
+
+            response.then((data) => {
+                console.log('HERE THE DATA:', data)
+              data.forEach((element) => {
+                element.forEach((a) => {
+                  convo.addMessage(a.toString());
+                  console.log('adding message:',a)
+                });
+              });
+              convo.activate();
+              console.log('Actvate!')
+            });
+      });
+
 });
 
 controller.hears(['call me (.*)', 'my name is (.*)'], 'message_received', function(bot, message) {
