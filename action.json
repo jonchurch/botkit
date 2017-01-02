@@ -1,0 +1,37 @@
+{
+  "versionLabel": "<INSERT YOUR VERSION LABEL HERE>",
+  "agentInfo": {
+    "languageCode": "en-US",
+    "projectId": "<INSERT YOUR PROJECT ID HERE>",
+    "voiceName": "male_1"
+  },
+  "actions": [
+    {
+      "description": "Launch intent",
+      "initialTrigger": {
+        "intent": "assistant.intent.action.MAIN"
+      },
+      "httpExecution": {
+        "url": "https://botkitgoogle.localtunnel.me/google/receive"
+      }
+    },
+    {
+      "description": "ask if bad for dogs",
+      "initialTrigger": {
+        "intent": "ask_if_bad",
+        "queryPatterns": [
+          {
+            "queryPattern": "bad for dogs"
+          },
+          {
+            "queryPattern": "hurt dogs"
+          }
+        ]
+      },
+      "httpExecution": {
+        "url": "https://botkitgoogle.localtunnel.me/google/receive"
+      }
+    }
+
+  ]
+}
