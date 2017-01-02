@@ -36,10 +36,13 @@ controller.on('assistant.intent.action.TEXT', function(assistant) {
     assistant.tell('I am pretty sure that pizza is good for dogs. Spaghetti too.')
 })
 
-controller.on('ask_if_bad', function(assistant) {
-    console.log('==============BAD FOR DOG ASK!!!');
-    var message = assistant.buildInputPrompt(false, 'I am pretty sure that pizza is good for dogs. Ravioli too.')
+controller.on('input.item', function(assistant) {
+    var rawInput = assistant.getRawInput()
+    var matches = rawInput.match(/dogs eat\s(\w*)/, '');
+    console.log('==============BAD FOR DOG ASK!!!\n', matches[1]);
 
-    assistant.tell('You asked if something is bad for your dog')
+    // var message = assistant.buildInputPrompt(false, 'I am pretty sure that pizza is good for dogs. Ravioli too.')
+
+    assistant.tell('You asked if ' + matches[1] + ' is bad for your dog')
 
 })
