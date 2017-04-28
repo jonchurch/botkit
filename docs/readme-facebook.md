@@ -343,10 +343,24 @@ controller.api.thread_settings.YOUR_METHOD_NAME();
 Facebook offers a Messenger Profile API to customize special bot features
 such as a persistent menu and a welcome screen. We highly recommend you use all of these features, which will make your bot easier for users to work with. [Read Facebook's docs here](https://developers.facebook.com/docs/messenger-platform/messenger-profile).
 
+> Note: When resetting the persistent menu, you may need to delete the conversation from Facebook Messenger and start it again for you to see the changes
+
 #### controller.api.messenger_profile.greeting()
 | Argument | Description
 |---  |---
-| message | greeting message to display on welcome screen
+| message | object or array of objects, greeting message to display on welcome screen
+
+```javascript
+
+controller.api.messenger_profile.greeting([
+    {
+      "locale":"default",
+      "text":"Hello!"
+    }, {
+      "locale":"en_US",
+      "text":"Timeless apparel for the masses."
+    }])
+```
 
 #### controller.api.messenger_profile.delete_greeting()
 
@@ -359,9 +373,14 @@ Get the greeting setting.
 #### controller.api.messenger_profile.get_started()
 | Argument | Description
 |---  |---
-| payload | value for the postback payload sent when the button is clicked
+| payload | string value for the postback payload sent when the Get Started button is clicked
 
 Set the payload value of the 'Get Started' button
+
+```javascript
+
+controller.api.messenger_profile.get_started('GET_STARTED_PAYLOAD')
+```
 
 #### controller.api.messenger_profile.delete_get_started()
 
@@ -378,6 +397,50 @@ Get the get started setting.
 
 Create a [persistent menu](https://developers.facebook.com/docs/messenger-platform/messenger-profile/persistent-menu) for your Bot
 
+> Note: When resetting the persistent menu, you may need to delete the conversation from Facebook Messenger and start it again for you to see the changes
+
+```javascript
+controller.api.thread_settings.menu([
+       { "locale": "default",
+         "composer_input_disabled": false,
+         "call_to_actions": [
+           {
+          "title":"My Account",
+          "type":"nested",
+          "call_to_actions":[
+            {
+              "title":"Pay Bill",
+              "type":"postback",
+              "payload":"PAYBILL_PAYLOAD"
+            },
+            {
+              "title":"History",
+              "type":"postback",
+              "payload":"HISTORY_PAYLOAD"
+            },
+            {
+              "title":"Contact Info",
+              "type":"postback",
+              "payload":"CONTACT_INFO_PAYLOAD"
+            }
+          ]
+        },
+        {
+            "type":"postback",
+            "title":"Help",
+            "payload":"help"
+        },
+        {
+          "type":"web_url",
+          "title":"Botkit Docs",
+          "url":"https://github.com/howdyai/botkit/blob/master/readme-facebook.md"
+        }
+      ]
+    }
+                                        
+    ]);
+```
+
 #### controller.api.messenger_profile.delete_menu()
 
 Clear the persistent menu setting
@@ -389,7 +452,9 @@ Get the menu setting.
 #### controller.api.messenger_profile.account_linking()
 | Argument | Description
 |---  |---
-| payload | the account link.
+| payload | string, the account link url.
+
+Learn more about [FB Account Linking](https://developers.facebook.com/docs/messenger-platform/account-linking/v2.9)
 
 #### controller.api.messenger_profile.delete_account_linking()
 
@@ -402,7 +467,9 @@ Get the account link
 #### controller.api.messenger_profile.domain_whitelist()
 | Argument | Description
 |---  |---
-| payload | A single or a list of domains to add to the whitelist, All domains must be valid and use https. Up to 10 domains allowed.
+| payload | A string or an array of domains to add to the whitelist, All domains must be valid and use https. Up to 10 domains allowed.
+
+Learn more about [FB Domain Whitelisting](https://developers.facebook.com/docs/messenger-platform/messenger-profile/domain-whitelisting)
 
 #### controller.api.messenger_profile.delete_domain_whitelist()
 
