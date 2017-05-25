@@ -1,6 +1,6 @@
 
 
-var Botkit = require('botkit')
+var Botkit = require('./lib/Botkit.js')
 
 var controller = Botkit.wechatbot({
     access_token: process.env.access_token,
