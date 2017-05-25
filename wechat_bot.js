@@ -3,8 +3,8 @@
 var Botkit = require('botkit')
 
 var controller = Botkit.wechatbot({
-    access_token = process.env.access_token,
-    app_secret = process.env.app_secret,
+    access_token: process.env.access_token,
+    app_secret: process.env.app_secret,
 
 })
 
