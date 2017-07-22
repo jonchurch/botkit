@@ -143,7 +143,7 @@ controller.hears(['keyword','^pattern$'],['message_received'],function(bot,messa
 });
 ```
 
-####Control Flow
+#### Control Flow
 
 By default, only the first succesfully matched hears handler is executed. Return `true` in your handler to stop executing the current handler and move on to the next hears match.
 
