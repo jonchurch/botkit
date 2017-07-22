@@ -35,7 +35,6 @@
     "winston": "^2.3.1"
   },
   "scripts": {
-    "start": "node examples/multihears.js",
     "pretest": "jscs ./lib/ ./__test__ --fix",
     "test": "jest --coverage",
     "test-legacy": "mocha ./tests/*.js",
