@@ -126,6 +126,7 @@ which configures event handlers based on matching specific keywords or phrases i
 The hears function works just like the other event handlers, but takes a third parameter which
 specifies the keywords to match.
 
+
 | Argument | Description
 |--- |---
 | patterns | An _array_ or a _comma separated string_ containing a list of regular expressions to match
@@ -141,6 +142,42 @@ controller.hears(['keyword','^pattern$'],['message_received'],function(bot,messa
 
 });
 ```
+
+**Control Flow**
+By default, only the first succesful matched hears handler is executed. Return `true` in your hears handler to stop executing the current handler and continue evaluating other hanlders,
+
+Returning nothing, or `false`, will ensure no more handlers run, which is the default behavior.
+
+
+```javascript
+// sending 'bonjour' will respond in french if speaks.french is true
+// otherwise, the bot will respond with our catchall handler
+controller.hears(['^bonjour$'], 'direct_message', function(bot, message) {
+	if (speaks.french) {
+		bot.reply(message, 'Bonjour!')
+	} else {
+	// return true to move on to the next handler
+		return true
+	}
+})
+
+// sending hello will only respond with hello
+controller.hears(['^hello$'], 'direct_message', function(bot, message) {
+	bot.reply(message, 'Hello there!')
+})
+
+// sending howdy will give no response at all
+controller.hears(['^howdy$'], 'direct_message', function(bot, message) {
+	return false
+	bot.reply(message, 'nobody will ever see this')
+})
+
+controller.hears(['(.*)'], 'direct_message', function(bot, message){
+	bot.reply(message, 'I dont understand. (I respond to everything I hear)')
+})
+
+```
+
 
 When using the built in regular expression matching, the results of the expression will be stored in the `message.match` field and will match the expected output of normal Javascript `string.match(/pattern/i)`. For example:
 
