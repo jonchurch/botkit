@@ -85,6 +85,7 @@ Normal messages will be sent to your bot using the `message_received` event.  In
 | facebook_account_linking | a user has started the account linking
 | facebook_optin | a user has clicked the [Send-to-Messenger plugin](https://developers.facebook.com/docs/messenger-platform/implementation#send_to_messenger_plugin)
 | facebook_referral | a user has clicked on a [m.me URL with a referral param](https://developers.facebook.com/docs/messenger-platform/referral-params)
+| facebook_policy_enforcement | page has violated the [FB Messaging policy](https://developers.facebook.com/docs/messenger-platform/reference/webhook-events/messaging_policy_enforcement)
 
 All incoming events will contain the fields `user` and `channel`, both of which represent the Facebook user's ID, and a `timestamp` field.
 
