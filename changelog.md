@@ -1,5 +1,253 @@
 # Change Log
 
+[View the official Botkit roadmap](https://github.com/howdyai/botkit/projects/7) for upcoming changes and features.
+
+[Want to contribute? Read our guide!](https://github.com/howdyai/botkit/blob/master/CONTRIBUTING.md)
+
+# 0.6.11
+
+* For Botkit Studio users, added `controller.studio.getById()` for loading scripts
+by their unique ID rather than by name or trigger. [Docs here](docs/readme-studio.md#controllerstudiogetbyid)
+
+# 0.6.10
+
+* Add support for Cisco Jabber. Thanks to @qiongfangzhang and @panx981389 and their team at Cisco for the contribution!
+
+[Documentation for the Cisco Jabber adapter can be found here](docs/readme-ciscojabber.md)
+
+* Updated `ciscospark` dependency to latest version and fixed some bugs in the example bot
+
+* Update Twilio dependency to latest, along with small updates to adapter. Thanks @nishant-chaturvedi! [PR #1140](https://github.com/howdyai/botkit/pull/1140)
+
+# 0.6.9
+
+* Add 2 new middleware endpoints that occur during conversations - `conversationStart(bot, convo, next)` and `conversationEnd(bot, convo, next)`.  [Some new documentation](docs/readme.md#conversation-events-and-middleware-endpoints)
+* Conversations powered by Botkit Studio will now include `convo.context.script_name` and `convo.context.script_id` which point back to the script loaded from the Botkit Studio API
+* When using Botkit Studio's execute script action, the resulting conversation object will have 2 additional context fields: `convo.context.transition_from` and `convo.context.transition_from_id` which will point to the script from which the user transitioned
+* When using Botkit Studio's execute script action, the original conversation from which the user is transitioning will have 2 additional context fields: `convo.context.transition_to` and `convo.context.transition_to_id` which will point to the script to which the user transitioned
+* Fix for Botkit Studio scripts which used "end and mark successful" action from a condition. Previously this would end, but not mark successful.
+
+Merged Pull Requests:
+* Make sure Facebook API errors are passed to callback if specified [PR #1225](https://github.com/howdyai/botkit/pull/1225)
+* Refresh Microsoft Teams token when it has expired. [PR #1230](https://github.com/howdyai/botkit/pull/1230)
+* Update TypeScript definition for Web bots [PR #1231](https://github.com/howdyai/botkit/pull/1231)
+* Update TypeScript definition for bot.replyAndUpdate [PR #1232](https://github.com/howdyai/botkit/pull/1232)
+* Fix for Microsoft teams button builder function [PR #1233](https://github.com/howdyai/botkit/pull/1233)
+
+# 0.6.8
+
+BIG UPDATE:
+
+[Botkit now works on the web!](docs/readme-web.md) The new web connector supports websocket and webhook connections for sending and receiving messages. The brand new [Botkit Anywhere starter kit](https://github.com/howdyai/botkit-starter-web) includes a [customizable web chat client](https://github.com/howdyai/botkit-starter-web/blob/master/docs/botkit_web_client.md), and a [built-in chat server](https://github.com/howdyai/botkit-starter-web/blob/master/docs/botkit_chat_server.md).  Of course, this works with the existing stack of Botkit tools and plugins!
+
+New for Botkit Studio:
+
+Developers using Botkit Studio to create and manage script content can now utilize a new message action in their conditional statements, or at the end of any thread.
+It is now possible to direct your bot to seamlessly transition to a different Botkit Studio script. This allows for new patterns like interconnected menus, loops and branching conversations.
+
+New core features:
+
+Developers can now exclude specific types of events from being included in conversations using `controller.excludeFromConversations(event_name)`.
+This has been applied to the Facebook connector, which will now exclude certain events automatically. [Docs](docs/readme.md#excluding-events-from-conversations)
+
+The tick interval used for driving conversations can now be adjusted using `controller.setTickDelay(ms)`.  [Docs](docs/readme.md#changing-the-speed-of-botkits-internal-tick)
+
+
+Merged pull requests:
+
+Our community of Botkit Core developers is more than 150 people strong! Thank you to all of the contributors who spent their precious time improving Botkit for everyone. There are more than a dozen pull requests included in this release!!
+
+Core:
+
+* Upgraded the `ws` dependency to latest - [Thanks @naktibalda](https://github.com/howdyai/botkit/pull/1154)
+* Add delete method to in-memory store - [Thanks @naktibalda](https://github.com/howdyai/botkit/pull/1164)
+* memory store: don't log warning after each save - [Thanks @naktibalda](https://github.com/howdyai/botkit/pull/1197)
+
+Facebook:
+
+This release contains a ton of updates to the Facebook connector, many of which were contributed by @ouadie-lahdioui!
+
+* pass error object to the callbacks for failed send Api calls - [Thanks @nishant-chaturvedi](https://github.com/howdyai/botkit/pull/1147)
+* Secures FB Graph API Requests with optional app secret [Docs](docs/readme-facebook.md#app-secret-proof) - [Thanks @ouadie-lahdioui](https://github.com/howdyai/botkit/pull/1170)
+* Add Facebook Handover Protocol [Docs](docs/readme-facebook.md#handover-protocol) - [Thanks @ouadie-lahdioui](https://github.com/howdyai/botkit/pull/978)
+* Include messaging_type property in all Botkit message sends [Docs](docs/readme-facebook.md#messaging-type)- [Thanks @ouadie-lahdioui](https://github.com/howdyai/botkit/pull/1171)
+* Add FB Broadcast Messages API [Docs](https://github.com/howdyai/botkit/blob/068/docs/readme-facebook.md#broadcast-messages-api) - [Thanks @ouadie-lahdioui](https://github.com/howdyai/botkit/pull/1180)
+* Add Facebook insights API [Docs](https://github.com/howdyai/botkit/blob/068/docs/readme-facebook.md#messaging-insights-api) - [Thanks @ouadie-lahdioui](https://github.com/howdyai/botkit/pull/1183)
+* Include user's email in profile if returned from facebook API - [Thanks @iniq](https://github.com/howdyai/botkit/pull/1193)
+* Properly trigger security session events from facebook workplace - [Thanks @ariel-learningpool](https://github.com/howdyai/botkit/pull/1110)
+* fix bug when using Facebook Checkbox Plugin - [Thanks @shmuelgutman](https://github.com/howdyai/botkit/pull/1101)
+
+Botkit will now exclude `message_delivered`, `message_echo` and `message_read` events from inclusion in conversations using the new `excludeFromConversations()` function. [Docs](docs/readme.md#excluding-events-from-conversations)
+
+
+Slack:
+
+These fixes for the Slack connector add more ways to protect your bot from potentially malicious incoming webhook events. Use them!!
+
+* Add optional Slack token verification to config - [Thanks @shishisharma](https://github.com/howdyai/botkit/pull/981)
+* Apply verification middleware only on the webhook endpoint - [Thanks @nishant-chaturvedi](https://github.com/howdyai/botkit/pull/1203)
+
+# 0.6.7
+
+Add `controller.studio.getScripts()` to load all a list of available scripts from Botkit Studio [Docs](docs/readme-studio.md#controllerstudiogetscripts)
+
+Add handling (and error messages) for 401 response codes from Botkit Studio APIs that indicate a bad access token
+
+## 0.6.6
+
+Important fixes to Facebook and Cisco Spark connectors: A breaking change was introduced in 0.6.5 which has now been fixed.
+
+Remove `crypto` dependency, now use built-in crypto library.
+
+Update `botkit-studio-sdk` dependency to latest version.
+
+## 0.6.5
+
+Introducing the Botkit command line tool!
+
+Run: `npm install -g botkit`
+
+Then, you'll be able to set up a new Botkit project (based on one of our excellent starter kits!) by typing:
+
+`botkit new --name "my bot"`
+
+New helper functions:
+
+Botkit bots for Slack, Cisco Spark, Microsoft Teams and Facebook now have support for additional helper functions:
+
+`bot.getMessageUser(message)` returns a Promise that will receive a normalized user profile object for the user who sent the message.
+
+`bot.getInstanceInfo()` returns a Promise that will receive a normalized instance object, with `identity` and `team` fields.
+
+
+## 0.6.4
+
+Fix for Cisco Spark: improved methodology for detecting and handling @mentions
+
+Fix for Slack: allow multiple validation errors to be passed in to `bot.dialogError()`.  Thanks @cfs! [PR #1080](https://github.com/howdyai/botkit/pull/1080)
+
+Fix for Slack: fix for `bot.whisper()` Thanks to @jonchurch and @fletchrichman!
+
+New: Botkit Studio scripts may now contain custom fields in message objects. This is in support of an upcoming feature in Botkit Studio which will allow developers to add define these custom fields in the Studio IDE.
+
+## 0.6.3
+
+New: Support for [Slack Dialogs](https://api.slack.com/dialogs), including:
+
+* `bot.createDialog()` function [Docs](docs/readme-slack.md#dialogs)
+* `bot.replyWithDialog()` function [Docs](docs/readme-slack.md#botreplywithdialog)
+* `bot.api.dialog.open()` function
+* `dialog_submission` event [Docs](docs/readme-slack.md#receive-dialog-submissions)
+* `bot.dialogOk()` function [Docs](docs/readme-slack.md#botdialogok)
+* `bot.dialogError()` function [Docs](docs/readme-slack.md#botdialogerror)
+
+Fix: Cisco Spark bots will once again receive `direct_message` and `direct_mention` events. (Fix for [#1059](https://github.com/howdyai/botkit/issues/1059))
+
+## 0.6.2
+
+Fix bug in Facebook connector: call `startTicking()` as part of object instantiation. This was missing in 0.6 and 0.6.1
+
+Move call to `startTicking()` in TwilioIPM connector to make it consistent with other connectors.
+
+Fix: Catch 202 response code that does not have a JSON response body. This status sometimes comes back from the MS Teams API when a message has been queued for delivery.
+
+## 0.6.1
+
+Fix bugs in Botframework and ConsoleBot connectors that caused messages not to send. Resolves #1033.
+
+Fix typo in Twilio connector that caused attached media to fail. Thanks @jpowers! [PR #1023](https://github.com/howdyai/botkit/pull/1023)
+
+Fix missing `bodyParser` module in Facebook connector. Resolves #1041.
+
+New: Add support for the new `conversations` APIs for Slack. [Read about this new API here](https://api.slack.com/docs/conversations-api).
+
+New: Add `usergroups` APIs for Slack. Thanks to @digitalspecialists for this! [PR #1001](https://github.com/howdyai/botkit/pull/1001)
+
+Change: Facebook `message_echo` webhooks will now emit `message_echo` events instead of `message_received` events to distinguish them from messages sent by users.
+
+
+## 0.6.0
+
+This version features some BIG CHANGES!
+
+**New platform support:**
+
+[Microsoft Teams](docs/readme-teams.md) is now officially supported with its own connector, including new features in [Botkit Studio](https://studio.botkit.ai) like authoring of Teams-specific attachments, an app package builder and configuration manager, and [a new starter kit](https://github.com/howdyai/botkit-starter-teams).
+
+[Read the full docs for Botkit for Microsoft Teams](docs/readme-teams.md)
+
+**Major changes to message handling code:**
+
+[Introducing the Botkit Message Pipeline](docs/readme-pipeline.md), a formalized process for Botkit's handling of incoming and outgoing messages. All of the platform connectors have been refactored to use this new series of middleware functions, and are now implemented in a uniform way.
+
+Developers who make use of Botkit's middleware system should [take time to read this update](docs/readme-pipeline.md). Most current middleware functions will  continue to work as expected, but mild changes may be desirable to update these functions to use Botkit's latest features.
+
+In addition, developers who use third party middleware plugins should carefully retest their applications after upgrading to version 0.6, as these plugins may need to be updated for full compatibility.
+
+**Upgrade Guide:**
+
+This version of Botkit deprecates the `receive_via_postback` and `interactive_replies` options
+that caused button clicks to be treated as typed messages.  These and other small changes to the way Botkit emits events may require minor updates to some Botkit apps.
+
+[Upgrading from Botkit 0.5 or lower? Read this guide!](docs/howto/upgrade_05to06.md)
+
+
+## 0.5.8
+
+Slack: Support for sending ephemeral messages with `bot.whisper()` and `bot.sendEphemeral()`. In addition, any message with `message.ephemeral` set to true will be sent with `bot.sendEphemeral()` automatically. [Read documentation here.](docs/readme-slack.md#ephemeral-messages) Thanks to [@jonchurch](https://github.com/howdyai/botkit/pull/958)
+
+Slack: Add support for `bot.api.files.sharedPublicURL()` method. Thanks to [@GitTristan](https://github.com/howdyai/botkit/pull/912)
+
+Facebook: Support for using [message tags](https://developers.facebook.com/docs/messenger-platform/message-tags).  [Read documentation here.](docs/readme-facebook.md#message-tags) Thanks to [@ouadie-lahdioui](https://github.com/howdyai/botkit/pull/960)
+
+Facebook: Support for using Facebook's new built-in NLP tools. [Read documentation here.](docs/readme-facebook.md#built-in-nlp) Thanks to [@ouadie-lahdioui](https://github.com/howdyai/botkit/pull/943) for this one too!!
+
+
+Twilio SMS: Add support for sending MMS messages (file attachments) via Twilio. [Read documentation here.](docs/readme-twiliosms.md#sending-media-attachments-mms) Thanks to [@krismuniz](https://github.com/howdyai/botkit/pull/951)!
+
+Cisco Spark: Emit a console warning when a bot receives messages from outside the allowed domain list. Thanks to [@MathRobin](https://github.com/howdyai/botkit/pull/918)!
+
+New: Typescript declarations! Thanks to [@uny and @naktibalda](https://github.com/howdyai/botkit/pull/953) for their work on this.
+
+
+
+## 0.5.7
+
+Lock in ciscospark dependency at version 1.8.0 until further notice due to breaking changes in more recent versions.
+
+## 0.5.6
+
+Fix for Botkit Studio-powered bots: Facebook attachments can now be added without buttons
+
+Fix for Cisco Spark: Bot mentions will now reliably be pruned from message, regardless of what client originated the message
+
+Fix for Cisco Spark: startPrivateConversationWithPersonID has been fixed.
+
+## 0.5.5
+
+*Introducing Botkit for SMS!* Botkit bots can now send and receive messages using Twilio's Programmable SMS API!
+Huge thanks to @krismuniz who spearheaded this effort! [Read all about Twilio SMS here](docs/readme-twiliosms.md)
+
+*New unit tests* have been added, thanks to the ongoing efforts of @colestrode, @amplicity and others.
+This release includes coverage of the Botkit core library and the Slack API library.
+This is an [ongoing effort](https://github.com/howdyai/botkit/projects/3), and we encourage interested developers to get involved!
+
+Add missing error callback to catch Slack condition where incoming messages do not match a team in the database.
+[PR #887](https://github.com/howdyai/botkit/pull/887) thanks to @alecl!
+
+Add support for Facebook attachment upload api [PR #899](https://github.com/howdyai/botkit/pull/899) thanks @ouadie-lahdioui!
+Read docs about this feature [here](docs/readme-facebook.md#attachment-upload-api)
+
+Fixed issue with Slack message menus. [PR #769](https://github.com/howdyai/botkit/pull/769)
+
+Fixed confusing parameter in JSON storage system. `delete()` methods now expect object id as first parameter. [PR #854](https://github.com/howdyai/botkit/pull/854) thanks to @mehamasum!
+
+All example bot scripts have been moved into the [examples/](examples/) folder. Thanks @colestrode!
+
+Fixes an instance where Botkit was not automatically responding to incoming webhooks from Cisco with a 200 status. [PR #843](https://github.com/howdyai/botkit/pull/843)
+
+Updated dependencies to latest: twilio, ciscospark, https-proxy-agent, promise
+
 ## 0.5.4
 
 Fix for [#806](https://github.com/howdyai/botkit/issues/806) - new version of websocket didn't play nice with Slack's message servers
@@ -206,7 +454,7 @@ Adds [ConsoleBot](lib/ConsoleBot.js) for creating bots that work on the command 
 
 Adds a new [Middleware Readme](readme-middlewares.md) for documenting the existing middleware modules
 
-Adds an example for using quick replies in the [Facebook Example Bot](facebook_bot.js)
+Adds an example for using quick replies in the [Facebook Example Bot](examples/facebook_bot.js)
 
 Adds additional fields to Facebook messages to specify if they are `facebook_postback`s or normal messages.
 
@@ -290,7 +538,7 @@ Make the oauth identity available to the user of the OAuth endpoint via `req.ide
 
 Fix issue where single team apps had a hard time receiving slash command events without funky workaround. (closes [Issue #108](https://github.com/howdyai/botkit/issues/108))
 
-Add [team_slashcommand.js](/examples/team_slashcommand.js) and [team_outgoingwebhook.js](/examples/team_outgoingwebhook.js) to the examples folder.
+Add [team_slashcommand.js](/examples/slack/team_slashcommand.js) and [team_outgoingwebhook.js](/examples/slack/team_outgoingwebhook.js) to the examples folder.
 
 
 
